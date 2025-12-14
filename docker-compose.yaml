@@ -1,0 +1,13 @@
+version: '3.8' # Docker Composeのバージョン指定
+
+services:
+  web: # サービス名（コンテナ名として使用されます）
+    build: . # Dockerfileがあるディレクトリ（現在のディレクトリ）を指定
+    ports:
+      - "8000:8000" # ホストPCのポート8000をコンテナのポート8000にマッピング
+    volumes:
+      - ./backend:/app/backend # ホストPCの現在のディレクトリをコンテナ内の/appにマウント
+      - ./frontend:/app/frontend # ホストPCの現在のディレクトリをコンテナ内の/appにマウント
+      - ./requirements.txt:/app/requirements.txt # ホストPCの現在のディレクトリをコンテナ内の/appにマウント
+    working_dir: /app/backend/api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
