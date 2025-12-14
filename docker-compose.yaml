@@ -1,13 +1,17 @@
 version: '3.8' # Docker Composeのバージョン指定
 
 services:
-  web: # サービス名（コンテナ名として使用されます）
+  web:
+    # サービス名（コンテナ名として使用されます）
     build: . # Dockerfileがあるディレクトリ（現在のディレクトリ）を指定
     ports:
       - "8000:8000" # ホストPCのポート8000をコンテナのポート8000にマッピング
     volumes:
-      - ./backend:/app/backend # ホストPCの現在のディレクトリをコンテナ内の/appにマウント
-      - ./frontend:/app/frontend # ホストPCの現在のディレクトリをコンテナ内の/appにマウント
-      - ./requirements.txt:/app/requirements.txt # ホストPCの現在のディレクトリをコンテナ内の/appにマウント
-    working_dir: /app/backend/api
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - ./backend:/app/backend # コード変更を即座に反映（ホットリロード用）
+      - ./frontend:/app/frontend # フロントエンドコード（必要に応じて）
+      - ./requirements.txt:/app/requirements.txt # requirements.txtもマウント
+    environment:
+      # PYTHONPATHを設定することで、main.pyで「from api.routers import task, done」が動作します
+      - PYTHONPATH=/app/backend
+    working_dir: /app/backend/api # main.pyがある場所
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload # --reload: コード変更を自動検知して再起動（開発時に便利）

@@ -2,6 +2,7 @@
 # でfast APIが使えるようになる。
 from fastapi import FastAPI
 # apiフォルダの中のroutersファルダでtask, doneをインポートする。
+# 絶対インポートを使用（PYTHONPATH=/app/backendに設定することで動作）
 from api.routers import task, done
 
 # pip install "uvicorn[standard]"
@@ -9,7 +10,11 @@ from api.routers import task, done
 # 本番環境ではuvicorn , HypercornのようなASGIサーバが必要になる。
 import uvicorn
 # app = FastAPI()で簡単に宣言できるようにしておく
+# インスタンス生成
+# uvicornのmain:appとかはこのインスタンス生成によって決まる
 app = FastAPI()
+# パスオペレーションで返せるのはdict, list, int, str, Pydanticモデルも返せる
+
 app.include_router(task.router)
 app.include_router(done.router)
 # ブラウザ : rootでmessage をreturn する。
